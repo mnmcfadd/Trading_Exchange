@@ -10,9 +10,10 @@ A firm may start a Trading System session, and use that session to place orders 
 
 The matching engine maintains its own order sequence numbers. By doing so, all operations of the matching engine are deterministic based on the previous operations. This adds a level of reliability to the system, as technically if the matching engine fails at any point, we can use the logs produced, ordered by the sequence numbers, and re-play all actions taken by the matching engine up to the current state, where it can continue to operate as intended. The aformentioned functionality (backup ME) is not currently implemented here. It would require parsing logs, and would be straight forward to implement.
 
-### <u>Matching Engine (ME)</u>
 
-**<u>In memory:</u>**
+## Matching Engine (ME)
+
+**<ins>In memory:</ins>**
 
 *seq_num -* (sequential number for each ME operation) - integer
 *bids -* (all bids actively on order book) - heap: [tuple: (price, sequence_number)]
@@ -22,7 +23,7 @@ The matching engine maintains its own order sequence numbers. By doing so, all o
 *order_log -* (relevant info for all valid orders placed) - map: [order_ID: list [order_timestamp, direction (bid/offer), order_price, order_qty]]
 *execution_log -* (relevant info for all executions) - map: [execution_ID: list [execution_timestamp, buyer_ID, bid_ID, seller_ID, offer_ID, execution_price, execution_qty]]
 
-**<u>Functions:</u>**
+**<ins>Functions:</ins>**
 
 *Init: parameters=[self] -* Starts matching engine session.
 
@@ -40,9 +41,9 @@ The matching engine maintains its own order sequence numbers. By doing so, all o
 
 *get_book: parameters=[self] -* generates and displays a table with the pivot view of the current order book.
 
-### <u>Trading System</u>
+## Trading System
 
-**<u>In Memory:</u>**
+**<ins>In Memory:</ins>**
 
 *name -* (name of the trading entity) - string
 
@@ -52,7 +53,7 @@ The matching engine maintains its own order sequence numbers. By doing so, all o
 
 *sys_seq -* (sequential number for each of the entity's operations) - integer
 
-**<u>Functions:</u>**
+**<ins>Functions:</ins>**
 
 *init: parameters=[self, name, ID, ME] -* Starts trading session, initializes entity information.
 
