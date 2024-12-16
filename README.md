@@ -13,54 +13,60 @@ The matching engine maintains its own order sequence numbers. By doing so, all o
 
 ## Matching Engine (ME)
 
-**<ins>In memory:</ins>**
+### <ins>In memory:</ins> 
 
-*seq_num -* (sequential number for each ME operation) - integer
-*bids -* (all bids actively on order book) - heap: [tuple: (price, sequence_number)]
-*offers -* (all offers actively on order book) - heap: [tuple: (price, sequence_number)]
-*order_info -* (relevant info for all active orders) - map: [order_ID: list [order_qty, sequence_number, order_timestamp, order_price]]
-*seq_to_ID -* (maps each sequence number with active order_ID) - map: [sequence_number: order_ID/execution_ID]
-*order_log -* (relevant info for all valid orders placed) - map: [order_ID: list [order_timestamp, direction (bid/offer), order_price, order_qty]]
-*execution_log -* (relevant info for all executions) - map: [execution_ID: list [execution_timestamp, buyer_ID, bid_ID, seller_ID, offer_ID, execution_price, execution_qty]]
+**seq_num -** (sequential number for each ME operation) - integer
 
-**<ins>Functions:</ins>**
+**bids -** (all bids actively on order book) - heap: [tuple: (price, sequence_number)]
 
-*Init: parameters=[self] -* Starts matching engine session.
+**offers -** (all offers actively on order book) - heap: [tuple: (price, sequence_number)]
 
-*new_order: parameters=[self, order_direction, order_price, order_qty, order_ID] -* Performs minimal validation check, ignoring order if not valid. If valid, add a timestamp and sequence_number to the order, and route to appropriate add_bid/offer function. Each new order is logged.
+**order_info -** (relevant info for all active orders) - map: [order_ID: list [order_qty, sequence_number, order_timestamp, order_price]]
 
-*add_bid: parameters=[self, bid_price, bid_qty, bid_timestamp, order_ID, sequence_number] -* redirects to match_bid() function to check for a cross i.e. trade(s) execution. If no match, place bid on order book. 
+**seq_to_ID -** (maps each sequence number with active order_ID) - map: [sequence_number: order_ID/execution_ID]
 
-*add_offer parameters=[self, offer_price, offer_qty, offer_timestamp, order_ID, sequence_number] -* redirects to match_bid() function to check for a cross i.e. trade(s) execution. If no match, place bid on order book.
+**order_log -** (relevant info for all valid orders placed) - map: [order_ID: list [order_timestamp, direction (bid/offer), order_price, order_qty]]
 
-*match_bid parameters=[self, bid_price, bid_qty, bid_timestamp, bid_order_ID, bid_sequence_number] -* checks order book for an offer with a price at or below the bid_price (the best offer at the time of the bid). If there is a match, that best offer is filled either partially or in its entirety, depending on the bid_qty. if the bid is not filled at this point, it is sent back to the add_bid function, and this process repeats until it has been fully filled or placed on the book. Any execution that occurs is logged.
+**execution_log -** (relevant info for all executions) - map: [execution_ID: list [execution_timestamp, buyer_ID, bid_ID, seller_ID, offer_ID, execution_price, execution_qty]]
 
-*match_offer parameters=[self, offer_price, offer_qty, offer_timestamp, offer_order_ID, offer_sequence_number] -* checks order book for a bid with a price at or above the offer_price (the best bid at the time of the offer). If there is a match, that best bid is filled either partially or in its entirety, depending on the offer_qty. if the offer is not filled at this point, it is sent back to the add_offer function, and this process repeats until it has been fully filled or placed on the book. Any execution that occurs is logged.
+### <ins>Functions:</ins>
 
-*cancel_order: parameters=[self, order_ID] -* checks if order is currently on the book. If so, it removes the order from the order_info and seq_to_ID tables. This way we can remove the order if/when we encounter it in the bids/offers heap, while order matching. 
+**Init: parameters=[self] -** Starts matching engine session.
 
-*get_book: parameters=[self] -* generates and displays a table with the pivot view of the current order book.
+**new_order: parameters=[self, order_direction, order_price, order_qty, order_ID] -** Performs minimal validation check, ignoring order if not valid. If valid, add a timestamp and sequence_number to the order, and route to appropriate add_bid/offer function. Each new order is logged.
+
+**add_bid: parameters=[self, bid_price, bid_qty, bid_timestamp, order_ID, sequence_number] -** redirects to match_bid() function to check for a cross i.e. trade(s) execution. If no match, place bid on order book. 
+
+**add_offer parameters=[self, offer_price, offer_qty, offer_timestamp, order_ID, sequence_number] -** redirects to match_bid() function to check for a cross i.e. trade(s) execution. If no match, place bid on order book.
+
+**match_bid parameters=[self, bid_price, bid_qty, bid_timestamp, bid_order_ID, bid_sequence_number] -** checks order book for an offer with a price at or below the bid_price (the best offer at the time of the bid). If there is a match, that best offer is filled either partially or in its entirety, depending on the bid_qty. if the bid is not filled at this point, it is sent back to the add_bid function, and this process repeats until it has been fully filled or placed on the book. Any execution that occurs is logged.
+
+**match_offer parameters=[self, offer_price, offer_qty, offer_timestamp, offer_order_ID, offer_sequence_number] -** checks order book for a bid with a price at or above the offer_price (the best bid at the time of the offer). If there is a match, that best bid is filled either partially or in its entirety, depending on the offer_qty. if the offer is not filled at this point, it is sent back to the add_offer function, and this process repeats until it has been fully filled or placed on the book. Any execution that occurs is logged.
+
+**cancel_order: parameters=[self, order_ID] -** checks if order is currently on the book. If so, it removes the order from the order_info and seq_to_ID tables. This way we can remove the order if/when we encounter it in the bids/offers heap, while order matching. 
+
+**get_book: parameters=[self] -** generates and displays a table with the pivot view of the current order book.
 
 ## Trading System
 
-**<ins>In Memory:</ins>**
+### <ins>In Memory:</ins>
 
-*name -* (name of the trading entity) - string
+**name -** (name of the trading entity) - string
 
-*ID -* (2 character unique entity ID) - string
+**ID -** (2 character unique entity ID) - string
 
-*ME -* (matching engine to route orders to) - object
+**ME -** (matching engine to route orders to) - object
 
-*sys_seq -* (sequential number for each of the entity's operations) - integer
+**sys_seq -** (sequential number for each of the entity's operations) - integer
 
-**<ins>Functions:</ins>**
+### <ins>Functions:</ins>
 
-*init: parameters=[self, name, ID, ME] -* Starts trading session, initializes entity information.
+**init: parameters=[self, name, ID, ME] -** Starts trading session, initializes entity information.
 
-*order: parameters=[self, order_direction, order_price, order_qty] -* redirects to validate() function. If valid, generate order ID with new_ID() function, and the route to matching engine's new_order() Function.
+**order: parameters=[self, order_direction, order_price, order_qty] -** redirects to validate() function. If valid, generate order ID with new_ID() function, and the route to matching engine's new_order() Function.
 
-*new_ID: parameters=[self] -* creates unique order_ID using firm's ID and current sys_sequence number.
+**new_ID: parameters=[self] -** creates unique order_ID using firm's ID and current sys_sequence number.
 
-*validate: parameters=[self, order_direction, order_price, order_qty] -* checks for valid direction (bid 'b', or offer 'o'), and ensures price and quantities are positive numeric values.
+**validate: parameters=[self, order_direction, order_price, order_qty] -*** checks for valid direction (bid 'b', or offer 'o'), and ensures price and quantities are positive numeric values.
 
-*book: parameters=[self] -* prompt matching engine to generate the current book and print to console.
+**book: parameters=[self] -** prompt matching engine to generate the current book and print to console.
