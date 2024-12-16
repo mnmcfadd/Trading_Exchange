@@ -15,19 +15,19 @@ The matching engine maintains its own order sequence numbers. By doing so, all o
 
 ### <ins>In memory:</ins> 
 
-**seq_num -** (sequential number for each ME operation) - integer
+**seq_num:** (sequential number for each ME operation) - integer
 
-**bids -** (all bids actively on order book) - heap: [tuple: (price, sequence_number)]
+**bids:** (all bids actively on order book) - heap: [tuple: (price, sequence_number)]
 
-**offers -** (all offers actively on order book) - heap: [tuple: (price, sequence_number)]
+**offers:** (all offers actively on order book) - heap: [tuple: (price, sequence_number)]
 
-**order_info -** (relevant info for all active orders) - map: [order_ID: list [order_qty, sequence_number, order_timestamp, order_price]]
+**order_info:** (relevant info for all active orders) - map: [order_ID: list [order_qty, sequence_number, order_timestamp, order_price]]
 
-**seq_to_ID -** (maps each sequence number with active order_ID) - map: [sequence_number: order_ID/execution_ID]
+**seq_to_ID:** (maps each sequence number with active order_ID) - map: [sequence_number: order_ID/execution_ID]
 
-**order_log -** (relevant info for all valid orders placed) - map: [order_ID: list [order_timestamp, direction (bid/offer), order_price, order_qty]]
+**order_log:** (relevant info for all valid orders placed) - map: [order_ID: list [order_timestamp, direction (bid/offer), order_price, order_qty]]
 
-**execution_log -** (relevant info for all executions) - map: [execution_ID: list [execution_timestamp, buyer_ID, bid_ID, seller_ID, offer_ID, execution_price, execution_qty]]
+**execution_log:** (relevant info for all executions) - map: [execution_ID: list [execution_timestamp, buyer_ID, bid_ID, seller_ID, offer_ID, execution_price, execution_qty]]
 
 ### <ins>Functions:</ins>
 
@@ -37,11 +37,11 @@ The matching engine maintains its own order sequence numbers. By doing so, all o
 
 **add_bid: parameters=[self, bid_price, bid_qty, bid_timestamp, order_ID, sequence_number] -** redirects to match_bid() function to check for a cross i.e. trade(s) execution. If no match, place bid on order book. 
 
-**add_offer parameters=[self, offer_price, offer_qty, offer_timestamp, order_ID, sequence_number] -** redirects to match_bid() function to check for a cross i.e. trade(s) execution. If no match, place bid on order book.
+**add_offer: parameters=[self, offer_price, offer_qty, offer_timestamp, order_ID, sequence_number] -** redirects to match_bid() function to check for a cross i.e. trade(s) execution. If no match, place bid on order book.
 
-**match_bid parameters=[self, bid_price, bid_qty, bid_timestamp, bid_order_ID, bid_sequence_number] -** checks order book for an offer with a price at or below the bid_price (the best offer at the time of the bid). If there is a match, that best offer is filled either partially or in its entirety, depending on the bid_qty. if the bid is not filled at this point, it is sent back to the add_bid function, and this process repeats until it has been fully filled or placed on the book. Any execution that occurs is logged.
+**match_bid: parameters=[self, bid_price, bid_qty, bid_timestamp, bid_order_ID, bid_sequence_number] -** checks order book for an offer with a price at or below the bid_price (the best offer at the time of the bid). If there is a match, that best offer is filled either partially or in its entirety, depending on the bid_qty. if the bid is not filled at this point, it is sent back to the add_bid function, and this process repeats until it has been fully filled or placed on the book. Any execution that occurs is logged.
 
-**match_offer parameters=[self, offer_price, offer_qty, offer_timestamp, offer_order_ID, offer_sequence_number] -** checks order book for a bid with a price at or above the offer_price (the best bid at the time of the offer). If there is a match, that best bid is filled either partially or in its entirety, depending on the offer_qty. if the offer is not filled at this point, it is sent back to the add_offer function, and this process repeats until it has been fully filled or placed on the book. Any execution that occurs is logged.
+**match_offer: parameters=[self, offer_price, offer_qty, offer_timestamp, offer_order_ID, offer_sequence_number] -** checks order book for a bid with a price at or above the offer_price (the best bid at the time of the offer). If there is a match, that best bid is filled either partially or in its entirety, depending on the offer_qty. if the offer is not filled at this point, it is sent back to the add_offer function, and this process repeats until it has been fully filled or placed on the book. Any execution that occurs is logged.
 
 **cancel_order: parameters=[self, order_ID] -** checks if order is currently on the book. If so, it removes the order from the order_info and seq_to_ID tables. This way we can remove the order if/when we encounter it in the bids/offers heap, while order matching. 
 
@@ -51,13 +51,13 @@ The matching engine maintains its own order sequence numbers. By doing so, all o
 
 ### <ins>In Memory:</ins>
 
-**name -** (name of the trading entity) - string
+**name:** (name of the trading entity) - string
 
-**ID -** (2 character unique entity ID) - string
+**ID:** (2 character unique entity ID) - string
 
-**ME -** (matching engine to route orders to) - object
+**ME:** (matching engine to route orders to) - object
 
-**sys_seq -** (sequential number for each of the entity's operations) - integer
+**sys_seq:** (sequential number for each of the entity's operations) - integer
 
 ### <ins>Functions:</ins>
 
