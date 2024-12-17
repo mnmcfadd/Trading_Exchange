@@ -17,17 +17,17 @@ The matching engine maintains its own order sequence numbers. By doing so, all o
 
 **seq_num:** (sequential number for each ME operation) - integer
 
-**bids:** (all bids actively on order book) - heap: [tuple: (price, sequence_number)]
+**bid_heap:** (all bids actively on order book) - heap: [tuple: (price, sequence_number)]
 
-**offers:** (all offers actively on order book) - heap: [tuple: (price, sequence_number)]
+**offer_heap:** (all offers actively on order book) - heap: [tuple: (price, sequence_number)]
 
-**order_info:** (relevant info for all active orders) - map: [order_ID: list [order_qty, sequence_number, order_timestamp, order_price]]
+**order_details:** (relevant info for all active orders) - map: [order_ID: list [order_qty, sequence_number, order_timestamp, order_price]]
 
-**seq_to_ID:** (maps each sequence number with active order_ID) - map: [sequence_number: order_ID/execution_ID]
+**seq_to_order_id:** (maps each sequence number with active order_ID) - map: [sequence_number: order_ID/execution_ID]
 
-**order_log:** (relevant info for all valid orders placed) - map: [order_ID: list [order_timestamp, direction (bid/offer), order_price, order_qty]]
+**order_log_entries:** (relevant info for all valid orders placed) - map: [order_ID: list [order_timestamp, direction (bid/offer), order_price, order_qty]]
 
-**execution_log:** (relevant info for all executions) - map: [execution_ID: list [execution_timestamp, buyer_ID, bid_ID, seller_ID, offer_ID, execution_price, execution_qty]]
+**execution_log_entries:** (relevant info for all executions) - map: [execution_ID: list [execution_timestamp, buyer_ID, bid_ID, seller_ID, offer_ID, execution_price, execution_qty]]
 
 ### <ins>Functions:</ins>
 
@@ -43,7 +43,7 @@ The matching engine maintains its own order sequence numbers. By doing so, all o
 
 **match_offer: parameters=[self, offer_price, offer_qty, offer_timestamp, offer_order_ID, offer_sequence_number] -** checks order book for a bid with a price at or above the offer_price (the best bid at the time of the offer). If there is a match, that best bid is filled either partially or in its entirety, depending on the offer_qty. if the offer is not filled at this point, it is sent back to the add_offer function, and this process repeats until it has been fully filled or placed on the book. Any execution that occurs is logged.
 
-**cancel_order: parameters=[self, order_ID] -** checks if order is currently on the book. If so, it removes the order from the order_info and seq_to_ID tables. This way we can remove the order if/when we encounter it in the bids/offers heap, while order matching. 
+**cancel_order: parameters=[self, order_ID] -** checks if order is currently on the book. If so, it removes the order from the order_details and seq_to_order_id tables. This way we can remove the order if/when we encounter it in the bids/offers heap, while order matching. 
 
 **get_book: parameters=[self] -** generates and displays a table with the pivot view of the current order book.
 
