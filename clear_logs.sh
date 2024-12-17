@@ -1,1 +1,0 @@
-rm 'Logs [main]'/exec_log.txt 'Logs [main]'/full_log.txt 'Logs [main]'/order_log.txt
