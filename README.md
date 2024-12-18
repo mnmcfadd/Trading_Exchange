@@ -29,6 +29,12 @@ The matching engine maintains its own order sequence numbers. By doing so, all o
 
 **execution_log_entries:** (relevant info for all executions) - map: [execution_ID: list [execution_timestamp, buyer_ID, bid_ID, seller_ID, offer_ID, execution_price, execution_qty]]
 
+**orders_out:** (file to store order log) - TextIOWrapper object
+
+**exec_out:** (file to store execution log) - TextIOWrapper object
+
+**full_out:** (file to store complete log) - TextIOWrapper object
+
 ### <ins>Functions:</ins>
 
 **Init: parameters=[self] -** Starts matching engine session.
@@ -55,7 +61,7 @@ The matching engine maintains its own order sequence numbers. By doing so, all o
 
 **ID:** (2 character unique entity ID) - string
 
-**ME:** (matching engine to route orders to) - object
+**ME:** (matching engine to route orders to) - MatchingEngine object
 
 **sys_seq:** (sequential number for each of the entity's operations) - integer
 
@@ -70,3 +76,17 @@ The matching engine maintains its own order sequence numbers. By doing so, all o
 **validate: parameters=[self, order_direction, order_price, order_qty] -*** checks for valid direction (bid 'b', or offer 'o'), and ensures price and quantities are positive numeric values.
 
 **book: parameters=[self] -** prompt matching engine to generate the current book and print to console.
+
+## Order Generation
+
+### <ins>In Memory:</ins>
+
+**orders:** (list of order parameters) - List[List[firm, order_direction, order_price, order_qty]]
+
+### <ins>Functions:</ins>
+
+**init: Parameters=[self] -** Initializes OrderGenerator class
+
+**generate_orders: Parameters=[self, firms, n_orders, avg_bid=11.50, avg_offer=12.50, stdev_price = 1, avg_qty=50, stdev_qty=15] -** Generates randomly generated list of order info, including firm placing the order (matching engine implicit via the trading session instance), direction of the order (bid or offer), and order price and qty which follow a normal distribution. This list can be iterated through to simulate matching engine operation under load.
+
+**place_orders: Parameters=[self] -** iterates through generated orders and sends to matching engine associated with each firm.
