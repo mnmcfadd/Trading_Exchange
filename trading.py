@@ -38,3 +38,7 @@ Invalid Size: {price}.\t\t\t\tValid Sizes are Greater than Zero (qty > 0)")
 
     def book(self):
         self.ME.get_book()
+
+class GenerateOrders:
+    def __init__(self):
+        return

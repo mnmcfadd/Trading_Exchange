@@ -43,14 +43,14 @@ class MatchingEngine:
 #the new order before redirecting to the match_bid/offer function. marginal reduction
 #in complexity?
   def add_bid(self, price, qty, timestamp, order_id, seq):
-    if self.offer_heap and self.match_bid(price, qty, timestamp, order_id, seq):
+    if self.offer_heap and price >= self.offer_heap[0][0] and self.match_bid(price, qty, timestamp, order_id, seq):
       return
     heapq.heappush(self.bid_heap, (-price, seq))
     self.seq_to_order_id[seq] = order_id
     self.order_details[order_id] = [qty, seq, timestamp, -price]
 
   def add_offer(self, price, qty, timestamp, order_id, seq):
-    if self.bid_heap and self.match_offer(price, qty, timestamp, order_id, seq):
+    if self.bid_heap and price <= -self.bid_heap[0][0] and self.match_offer(price, qty, timestamp, order_id, seq):
       return
     heapq.heappush(self.offer_heap, (price, seq))
     self.seq_to_order_id[seq] = order_id
@@ -84,7 +84,7 @@ class MatchingEngine:
       log_entry = f"{exec_seq}\t exec\t {exec_ID}\t {buyer_ID}\t {order_id}\t {seller_ID}\t {best_offer_id}\t {exec_timestamp}\t {best_offer_price}\t {trade_size}\n"
       self.exec_out.write(log_entry)
       self.full_out.write(log_entry)
-      print(f"Trade Executed: Bid ID = {order_id}\tOffer ID = {best_offer_id}size = {trade_size}\tprice = {best_offer_price}")
+#      print(f"Trade Executed: Bid ID = {order_id}\tOffer ID = {best_offer_id}size = {trade_size}\tprice = {best_offer_price}")
 
       if not self.order_details[best_offer_id][0]:
         heapq.heappop(self.offer_heap)
@@ -126,7 +126,7 @@ class MatchingEngine:
       self.full_out.write(log_entry)
 
 #generate execution ID.. 
-      print(f"Trade Executed: Bid ID = {best_bid_id}\tOffer ID = {order_id}\tsize = {trade_size}\tprice = {best_bid_price}")
+#      print(f"Trade Executed: Bid ID = {best_bid_id}\tOffer ID = {order_id}\tsize = {trade_size}\tprice = {best_bid_price}")
 
       if not self.order_details[best_bid_id][0]:
         heapq.heappop(self.bid_heap)
