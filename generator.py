@@ -33,6 +33,7 @@ class MonitoringTools:
             return
         self.order_log = self.extract_log_data(ME.log_directory + "/order_log.txt")
         self.exec_log = self.extract_log_data(ME.log_directory + "/exec_log.txt")
+        self.full_log = self.extract_log_data(ME.log_directory + "/full_log.txt")
 
     def extract_log_data(self, PATH):
         log_data = []
@@ -106,4 +107,27 @@ class MonitoringTools:
         plt.xticks(rotation=45)
         plt.tight_layout()
         plt.show()
-        return
+    
+    def total_throughput(self):
+        times = [float(data[-3]) for data in self.full_log]
+        freq = []
+        for i in range(1, len(times)):
+            delta = times[i] - times[i-1]
+            freq.append(1/delta)
+        n_ops = range(1, len(times))
+
+        data = pd.DataFrame({'operations': n_ops, 'Freq': freq})
+        data['Smoothed Freq'] = data['Freq'].rolling(window=100).mean() 
+
+        plt.figure(figsize=(10, 6))
+        plt.plot(data['operations'], data['Freq'], alpha=0.5, label='Raw Data')
+        plt.plot(data['operations'], data['Smoothed Freq'], label='Smoothed Data', linewidth=2)
+        plt.xlabel('Operations')
+        plt.ylabel('Frequency [1/s]')
+        plt.title('Operations Frequency (orders + executions)')
+        plt.grid(True)
+        plt.legend()
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.show()
+    
