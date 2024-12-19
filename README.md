@@ -2,6 +2,8 @@
 
 A trading system and matching engine implementation. Supports efficient order validation and matching. Orders and Executions are logged, idempotency is enforced, order book is maintained and stored in-memory.
 
+**Sample usage [Here](https://github.com/mnmcfadd/Trading_Exchange/blob/main/testing.ipynb)**
+
 ## Basic Structure:
 
 Matching engine acts as an independent entity to those placing orders. It is presumed (for now) that a given matching engine session represents one specific product on one exchange.
