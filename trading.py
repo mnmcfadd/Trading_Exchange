@@ -13,6 +13,12 @@ class TradingSystem:
         order_id = self.new_ID()
         self.ME.new_order(direction.lower(), price, qty, order_id)
 
+    def cancel_order(self, order_id):
+        if order_id not in self.ME.order_details:
+            print(f"Error Log: Cancel Order Reject - No such order ID on book: [\'{order_id}]\'")
+            return
+        self.ME.cancel_order(order_id)
+
     def new_ID(self):
         cur_sys_seq = str(self.sys_seq).zfill(4)
         self.sys_seq += 1
@@ -22,7 +28,7 @@ class TradingSystem:
 #add checks for parameter types.. check for tick size on price? int on qty
     def validate(self, direction, price, qty):
         valid = True
-        if direction not in 'bBoO':
+        if direction not in 'bBoOcC':
             print(f"Error Log: Order Validation - Order Type Error: \tOrder [\'{direction}\', {price}, {qty}]\n\
 Invalid order type: \'{direction}\'.\t\t\t\tValid Orders are \'b\' or \'o\'.")
             valid = False

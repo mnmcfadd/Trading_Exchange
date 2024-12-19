@@ -13,12 +13,12 @@ class MatchingEngine:
     self.seq_to_order_id = {}
     self.order_log_entries = {}
     self.execution_log_entries = {}
-    log_directory = f"Logs [{name}]"
-    if not os.path.exists(log_directory): 
-      os.makedirs(log_directory) 
-    self.orders_out = open(log_directory + "/order_log.txt", 'w', buffering=1)
-    self.exec_out = open(log_directory + "/exec_log.txt", 'w', buffering=1)
-    self.full_out = open(log_directory + "/full_log.txt", 'w', buffering=1)
+    self.log_directory = f"Logs [{name}]"
+    if not os.path.exists(self.log_directory): 
+      os.makedirs(self.log_directory) 
+    self.orders_out = open(self.log_directory + "/order_log.txt", 'w', buffering=1)
+    self.exec_out = open(self.log_directory + "/exec_log.txt", 'w', buffering=1)
+    self.full_out = open(self.log_directory + "/full_log.txt", 'w', buffering=1)
 
   def new_order(self, direction, price, qty, order_id):
     ORDER_ID_PATTERN = r"^[a-z]{2}\d{4}$"
@@ -139,10 +139,6 @@ class MatchingEngine:
     return False
 
   def cancel_order(self, order_id):
-    if order_id not in self.order_details:
-      print(f"Error Log: Cancel Order Reject - No such order ID on book: [\'{order_id}]\'")
-      return
-#add seq num, add to order/cancel log
     seq_num = self.order_details[order_id][1]
     del self.order_details[order_id]
     del self.seq_to_order_id[seq_num]
