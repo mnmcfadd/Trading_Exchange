@@ -38,10 +38,7 @@ class MatchingEngine:
     else:
       self.add_offer(price, qty, timestamp, order_id, seq)
     return
-  
-#NOTES: might be quicker to just check whether the best bid/offer price crosses witb
-#the new order before redirecting to the match_bid/offer function. marginal reduction
-#in complexity?
+
   def add_bid(self, price, qty, timestamp, order_id, seq):
     if self.offer_heap and price >= self.offer_heap[0][0] and self.match_bid(price, qty, timestamp, order_id, seq):
       return
@@ -84,8 +81,6 @@ class MatchingEngine:
       log_entry = f"{exec_seq}\t exec\t {exec_ID}\t {buyer_ID}\t {order_id}\t {seller_ID}\t {best_offer_id}\t {exec_timestamp}\t {best_offer_price}\t {trade_size}\n"
       self.exec_out.write(log_entry)
       self.full_out.write(log_entry)
-#      print(f"Trade Executed: Bid ID = {order_id}\tOffer ID = {best_offer_id}size = {trade_size}\tprice = {best_offer_price}")
-
       if not self.order_details[best_offer_id][0]:
         heapq.heappop(self.offer_heap)
         del self.order_details[best_offer_id]
@@ -135,7 +130,6 @@ class MatchingEngine:
       if qty:
         self.add_offer(price, qty, timestamp, order_id, seq)
       return True
-
     return False
 
   def cancel_order(self, order_id):
